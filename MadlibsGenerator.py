@@ -1,12 +1,12 @@
 # mad_libs_web.py
 import os
-import openai
+from openai import OpenAI
 import streamlit as st
 from dotenv import load_dotenv
 
-
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 
 st.set_page_config(page_title="Mad Libs Generator", page_icon="🧠")
 
@@ -38,26 +38,29 @@ if st.button("Generate Story"):
         with st.spinner("Generating your story... ✨"):
 
             prompt = (
-                f"Create a fun and silly Mad Libs-style short story using the following words:\n"
+                f"You're a clever, slightly deranged narrator with a taste for unpredictable, offbeat humor — the kind that makes 20-somethings "
+                f"snort-laugh at 2am. Using these words:\n"
                 f"- Name: {name}\n"
                 f"- Place: {place}\n"
                 f"- Animal: {animal}\n"
                 f"- Emotion: {emotion}\n"
                 f"- Action (verb ending in -ing): {action}\n\n"
-                f"The story should be no more than 5 sentences and written like a children's story."
+                f"Write a short story (max 5 sentences) that’s fast, weird, and entertaining. Embrace absurdism, left-field twists, and subtle dark humor. "
+                f"It should feel like a vivid inside joke with friends, not a tryhard improv skit. Don’t be edgy, don’t be wholesome — just smart, chaotic fun. "
+                f"Make sure something ridiculous happens. Keep it punchy."
             )
 
             try:
-                response = openai.ChatCompletion.create(
-                    model="gpt-3.5-turbo",
-                    messages=[
-                        {"role": "system", "content": "You are a playful storyteller."},
-                        {"role": "user", "content": prompt}
-                    ],
-                    temperature=0.9
+                response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                {"role": "system", "content": "You are a playful storyteller."},
+                {"role": "user", "content": prompt}
+                ],
+                temperature=0.9
                 )
 
-                story = response['choices'][0]['message']['content'].strip()
+                story = response.choices[0].message.content.strip()
                 st.markdown("### 🎉 Here's your AI-generated story:")
                 st.success(story)
 
@@ -69,3 +72,10 @@ if st.button("Generate Story"):
 
 st.markdown("---")
 st.caption("Made with 💻 and 😄 using Streamlit")
+
+
+
+
+
+
+
