@@ -61,7 +61,7 @@ if st.button("Generate Story"):
                 )
 
                 story = response.choices[0].message.content.strip()
-                st.markdown("### 🎉 Here's your AI-generated story:")
+                st.markdown("### 🎉 Here's your generated story:")
                 st.success(story)
 
             except Exception as e:
